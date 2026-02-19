@@ -28,32 +28,34 @@ int main(){
 
     switch (currentState){
     case inactive:
-        //look for userinput:
+        //checks for ememgency stop:
         if(elevio_stopButton){
             currentState = stop;
-            performEmergencyStop();
+            performEmergencyStop(orderList);
             break;
         }
+        //look for userinput:
         for (int btn = 1; btn <=3; btn++){
             if(elevio_callButton(btn, BUTTON_CAB)){
-                addOrder(btn);
+                addOrder(btn, orderList);
             }if(elevio_callButton(btn, BUTTON_HALL_UP)){
-                addOrder(btn);
+                addOrder(btn, orderList);
             }if(elevio_callButton(btn+1, BUTTON_HALL_DOWN)){
-                addOrder(btn+1);
+                addOrder(btn+1, orderList);
             }
         }
         if(elevio_callButton(4, BUTTON_CAB)){ 
-            addOrder(4);
+            addOrder(4,orderList);
         }
         
-        //determine where to go
+        //determine where to go:
         for(int floor = 0; floor <=3; floor++){
             if((*orderList)[floor] && floor > currentFloor){
                 currentState = goingUp;
             }
             else if ((*orderList)[floor] && floor < currentFloor){
                 currentState = goingDown;
+                currentFloor--;
             }
             else if ((*orderList)[floor] && floor == currentFloor && elevio_floorSensor() == currentFloor){
                 currentState = doorOpen;
@@ -65,10 +67,36 @@ int main(){
         break;
 
     case emergencyStop:
-
+        if(!elevio_stopButton()){
+            currentState = inactive;
+        }
         break;
 
     case goingUp:
+        //checks for ememgency stop:
+        if(elevio_stopButton){
+            currentState = stop;
+            performEmergencyStop();
+            break;
+        }
+
+        //look for userinput:
+        for (int btn = 1; btn <=3; btn++){
+            if(elevio_callButton(btn, BUTTON_CAB)){
+                addOrder(btn, orderList);
+            }if(elevio_callButton(btn, BUTTON_HALL_UP)){
+                addOrder(btn, orderList);
+            }if(elevio_callButton(btn+1, BUTTON_HALL_DOWN)){
+                addOrder(btn+1, orderList);
+            }
+        }
+        if(elevio_callButton(4, BUTTON_CAB)){ 
+            addOrder(4, orderList);
+        }
+
+        if(elevio_floorSensor() == -1){
+            break;
+        }
 
         break;
 
@@ -81,7 +109,7 @@ int main(){
         break;
 
     case obstruction:
-    
+
         break;
 
     }
@@ -133,6 +161,7 @@ int main(){
 //         }
         
 //         nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
+//          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
 //     }
 
 //     return 0;

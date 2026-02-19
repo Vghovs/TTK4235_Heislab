@@ -12,7 +12,7 @@ void stop(void){
     elevio_motorDirection(DIRN_STOP);
 }
 
-void emergencyStop(bool (*orderList)[4]){
+void performEmergencyStop(bool (*orderList)[4]){
     elevio_motorDirection(DIRN_STOP);
     clearOrders(orderList);
 }
