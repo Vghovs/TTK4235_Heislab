@@ -75,5 +75,17 @@ void initializeElevator(void){
         stop();   
     }
 }
-
-
+void  lookForOrders(bool (*orderList)){
+    for (int btn = 1; btn <=3; btn++){
+            if(elevio_callButton(btn, BUTTON_CAB)){
+                addOrder(btn, orderList);
+            }if(elevio_callButton(btn, BUTTON_HALL_UP)){
+                addOrder(btn, orderList);
+            }if(elevio_callButton(btn+1, BUTTON_HALL_DOWN)){
+                addOrder(btn+1, orderList);
+            }
+        }
+        if(elevio_callButton(4, BUTTON_CAB)){ 
+            addOrder(4,orderList);
+    }
+}

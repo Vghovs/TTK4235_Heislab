@@ -13,3 +13,4 @@ void clearOrders(bool (*orderList)[4]);
 void openDoor(void);
 void closeDoor(void);
 void initializeElevator(void);
+void lookForOrders(bool (*orderList));
