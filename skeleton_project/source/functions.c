@@ -12,7 +12,7 @@ void stop(void){
     elevio_motorDirection(DIRN_STOP);
 }
 
-void emergencyStop(void){
+void performEmergencyStop(void){
     elevio_motorDirection(DIRN_STOP);
     //floorQueueClear()
 }

@@ -5,7 +5,7 @@
 void elevatorDown(void);
 void elevatorUp(void);
 void stop(void);
-void emergencyStop(void);
+void performEmergencyStop(void);
 void addOrder(void);
 void removeOrder(void);
 void openDoor(void);
