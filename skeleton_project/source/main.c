@@ -26,92 +26,76 @@ int main(){
 
     currentState = inactive;
 
-    switch (currentState){
-    case inactive:
-        //checks for ememgency stop:
-        if(elevio_stopButton){
-            currentState = stop;
-            performEmergencyStop(orderList);
+    while(1){
+        switch (currentState){
+        case inactive:
+            //checks for ememgency stop:
+            if(elevio_stopButton){
+                currentState = emergencyStop;
+                performEmergencyStop(orderList);
+                break;
+            }
+            //look for userinput:
+            lookForOrders(orderList);
+            
+            //determine where to go:
+            for(int floor = 0; floor <=3; floor++){
+                if((*orderList)[floor] && floor > currentFloor){
+                    currentState = goingUp;
+                }
+                else if ((*orderList)[floor] && floor < currentFloor){
+                    currentState = goingDown;
+                    currentFloor--;
+                }
+                else if ((*orderList)[floor] && floor == currentFloor && elevio_floorSensor() == currentFloor){
+                    currentState = doorOpen;
+                }
+                else if ((*orderList)[floor] && floor == currentFloor && elevio_floorSensor() == -1){
+                    currentState = goingDown;
+                }
+            }
             break;
-        }
-        //look for userinput:
-        for (int btn = 1; btn <=3; btn++){
-            if(elevio_callButton(btn, BUTTON_CAB)){
-                addOrder(btn, orderList);
-            }if(elevio_callButton(btn, BUTTON_HALL_UP)){
-                addOrder(btn, orderList);
-            }if(elevio_callButton(btn+1, BUTTON_HALL_DOWN)){
-                addOrder(btn+1, orderList);
-            }
-        }
-        if(elevio_callButton(4, BUTTON_CAB)){ 
-            addOrder(4,orderList);
-        }
-        
-        //determine where to go:
-        for(int floor = 0; floor <=3; floor++){
-            if((*orderList)[floor] && floor > currentFloor){
-                currentState = goingUp;
-            }
-            else if ((*orderList)[floor] && floor < currentFloor){
-                currentState = goingDown;
-                currentFloor--;
-            }
-            else if ((*orderList)[floor] && floor == currentFloor && elevio_floorSensor() == currentFloor){
-                currentState = doorOpen;
-            }
-            else if ((*orderList)[floor] && floor == currentFloor && elevio_floorSensor() == -1){
-                currentState = goingDown;
-            }
-        }
-        break;
 
-    case emergencyStop:
-        if(!elevio_stopButton()){
-            currentState = inactive;
-        }
-        break;
-
-    case goingUp:
-        //checks for ememgency stop:
-        if(elevio_stopButton){
-            currentState = stop;
-            performEmergencyStop();
+        case emergencyStop:
+            if(!elevio_stopButton()){
+                currentState = inactive;
+            }
             break;
-        }
 
-        //look for userinput:
-        for (int btn = 1; btn <=3; btn++){
-            if(elevio_callButton(btn, BUTTON_CAB)){
-                addOrder(btn, orderList);
-            }if(elevio_callButton(btn, BUTTON_HALL_UP)){
-                addOrder(btn, orderList);
-            }if(elevio_callButton(btn+1, BUTTON_HALL_DOWN)){
-                addOrder(btn+1, orderList);
+        case goingUp:
+            //checks for ememgency stop:
+            if(elevio_stopButton){
+                currentState = emergencyStop;
+                performEmergencyStop(orderList);
+                break;
             }
-        }
-        if(elevio_callButton(4, BUTTON_CAB)){ 
-            addOrder(4, orderList);
-        }
 
-        if(elevio_floorSensor() == -1){
+            lookForOrders(orderList);
+
+            if(elevio_floorSensor() == -1){
+                break;
+            }
+            
+            currentFloor = elevio_floorSensor();
+
+            if((*orderList)[currentFloor]){
+                
+            }
+
+
+        case goingDown:
+
             break;
+
+        case doorOpen:
+
+            break;
+
+        case obstruction:
+
+            break;
+
         }
-
-        break;
-
-    case goingDown:
-
-        break;
-
-    case doorOpen:
-
-        break;
-
-    case obstruction:
-
-        break;
-
     }
 }
 
