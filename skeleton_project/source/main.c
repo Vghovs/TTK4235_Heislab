@@ -186,7 +186,33 @@ int main(){
             break;
 
         case obstruction:
-
+            //checks for ememgency stop:
+            if(elevio_stopButton){
+                currentState = emergencyStop;
+                performEmergencyStop(orderList);
+                break;
+            }
+            lookForOrders(orderList);
+            if((elevio_obstruction() != 1) && (obstructionClearedTime != -1)){
+                obstructionClearedTime = time(NULL);
+            }
+            if(elevio_obstruction() == 1){
+                obstructionClearedTime = -1;
+            }
+            if(time(NULL) >= obstructionClearedTime + 3){
+                closeDoor();
+                switch(currentDirection){
+                    case DIRN_DOWN:
+                        currentState = goingDown;
+                        break;
+                    case DIRN_UP:
+                        currentState = goingUp;
+                        break;
+                    case DIRN_STOP:
+                        currentState = inactive;
+                        break;
+                }
+            }
             break;
 
         }
