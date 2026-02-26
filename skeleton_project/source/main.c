@@ -31,11 +31,11 @@ int main(){
 
     currentState = inactive;
     currentDirection = DIRN_DOWN;
-    unsigned long currentTime = millis();
+    time_t currentTime = time(NULL);
     unsigned long doorOpened = 0;
 
     while(1){
-        currentTime = millis();
+        currentTime = time(NULL);
 
         switch (currentState){
         case inactive:
@@ -182,6 +182,7 @@ int main(){
             }
             
             currentState = inactive;
+            doorOpened = 0;
 
             break;
 
