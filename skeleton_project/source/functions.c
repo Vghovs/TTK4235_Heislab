@@ -12,48 +12,48 @@ void stop(void){
     elevio_motorDirection(DIRN_STOP);
 }
 
-void performEmergencyStop(bool (*orderList)[4]){
+void performEmergencyStop(bool *orderList){
     elevio_motorDirection(DIRN_STOP);
     clearOrders(orderList);
 }
  
-void addOrder(int floor, bool (*orderList)[4]){
+void addOrder(int floor, bool *orderList){
     switch(floor){
         case 1:
-            (*orderList)[0] = true;
+            orderList[0] = true;
             break;
         case 2:
-            (*orderList)[1] = true;
+            orderList[1] = true;
             break;
         case 3:
-            (*orderList)[2] = true;
+            orderList[2] = true;
             break;
         case 4:
-            (*orderList)[3] = true;
+            orderList[3] = true;
             break;
     } 
 }
 
-void removeOrder(int floor, bool (*orderList)[4]){
+void removeOrder(int floor, bool *orderList){
     switch(floor){
         case 1:
-            (*orderList)[0] = false;
+            orderList[0] = false;
             break;
         case 2:
-            (*orderList)[1] = false;
+            orderList[1] = false;
             break;
         case 3:
-            (*orderList)[2] = false;
+            orderList[2] = false;
             break;
         case 4:
-            (*orderList)[3] = false;
+            orderList[3] = false;
             break;
     } 
 }
 
-void clearOrders(bool (*orderList)[4]){
+void clearOrders(bool *orderList){
     for (int i = 0; i < 4; i++){
-        (*orderList)[i] = false;
+        orderList[i] = false;
     }
 }
 
@@ -75,7 +75,7 @@ void initializeElevator(void){
         stop();   
     }
 }
-void  lookForOrders(bool (*orderList)){
+void  lookForOrders(bool *orderList){
     for (int btn = 1; btn <=3; btn++){
             if(elevio_callButton(btn, BUTTON_CAB)){
                 addOrder(btn, orderList);
