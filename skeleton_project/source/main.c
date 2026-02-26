@@ -22,7 +22,8 @@ typedef enum {
 
 
 int main(){
-    bool (*orderList)[4] = {0};
+    bool orders[4] = {false};
+    bool (*orderList)[4] = &orders;
     int currentState = initiate;
     int currentDirection = DIRN_STOP;
 
@@ -40,7 +41,7 @@ int main(){
         switch (currentState){
         case inactive:
             //checks for ememgency stop:
-            if(elevio_stopButton){
+            if(elevio_stopButton()){
                 currentState = emergencyStop;
                 performEmergencyStop(orderList);
                 break;
@@ -74,7 +75,7 @@ int main(){
 
         case goingUp:
             //checks for ememgency stop:
-            if(elevio_stopButton){
+            if(elevio_stopButton()){
                 currentState = emergencyStop;
                 performEmergencyStop(orderList);
                 break;
@@ -116,7 +117,7 @@ int main(){
 
         case goingDown:
             //checks for ememgency stop:
-            if(elevio_stopButton){
+            if(elevio_stopButton()){
                 currentState = emergencyStop;
                 performEmergencyStop(orderList);
                 break;
@@ -159,13 +160,13 @@ int main(){
 
         case doorOpen:
             //checks for ememgency stop:
-            if(elevio_stopButton){
+            if(elevio_stopButton()){
                 currentState = emergencyStop;
                 performEmergencyStop(orderList);
                 break;
             }
 
-            if(elevio_obstruction){
+            if(elevio_obstruction()){
                 currentState = obstruction;
                 doorOpened = 0;
                 break;
@@ -195,13 +196,14 @@ int main(){
             }
             lookForOrders(orderList);
 
-            if(elevio_obstruction != 1){
+            if(elevio_obstruction() != 1){
                 currentState = openDoor;
                 doorOpened = currentTime;
                 break;
             }
         }
     }
+    free(orderList);
 }
 
 
