@@ -31,8 +31,12 @@ int main(){
 
     currentState = inactive;
     currentDirection = DIRN_DOWN;
+    unsigned long currentTime = millis();
+    unsigned long doorOpened = 0;
 
     while(1){
+        currentTime = millis();
+
         switch (currentState){
         case inactive:
             //checks for ememgency stop:
@@ -88,6 +92,8 @@ int main(){
                 stop();
                 currentState = doorOpen;
                 (*orderList)[currentFloor] = 0;
+                openDoor();
+                doorOpened = currentTime;
                 break;
             }
             
@@ -128,6 +134,8 @@ int main(){
                 stop();
                 currentState = doorOpen;
                 (*orderList)[currentFloor] = 0;
+                openDoor();
+                doorOpened = currentTime;
                 break;
             }
             else{
@@ -150,6 +158,30 @@ int main(){
             break;
 
         case doorOpen:
+            //checks for ememgency stop:
+            if(elevio_stopButton){
+                currentState = emergencyStop;
+                performEmergencyStop(orderList);
+                break;
+            }
+
+            if(elevio_obstruction){
+                currentState = obstruction;
+                doorOpened = 0;
+                break;
+            }
+
+            lookForOrders(orderList);
+            
+            if(doorOpened == 0){
+                doorOpened = currentTime;
+                break;
+            }
+            else if (currentTime-doorOpened <= 3000){
+                break;
+            }
+            
+            currentState = inactive;
 
             break;
 
