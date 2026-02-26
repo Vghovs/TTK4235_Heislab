@@ -17,23 +17,23 @@ typedef enum {
     obstruction  = 6,
 }FSMStates;
 
-
+bool orders[4] = {false};
+bool (*orderList)[4] = &orders;
+int currentState = initiate;
+int currentDirection = DIRN_STOP;
+int currentFloor = 0;
+time_t currentTime = 0;
+time_t doorOpened = 0;
 
 
 
 int main(){
-    bool orders[4] = {false};
-    bool (*orderList)[4] = &orders;
-    int currentState = initiate;
-    int currentDirection = DIRN_STOP;
-
     initializeElevator();
-    int currentFloor = elevio_floorSensor();
+    currentFloor = elevio_floorSensor();
 
     currentState = inactive;
     currentDirection = DIRN_DOWN;
-    time_t currentTime = time(NULL);
-    unsigned long doorOpened = 0;
+    
 
     while(1){
         currentTime = time(NULL);
@@ -204,6 +204,7 @@ int main(){
         }
     }
     free(orderList);
+    orderList = NULL;
 }
 
 
