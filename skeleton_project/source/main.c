@@ -7,24 +7,30 @@
 #include "functions.h"
 
 //Fininte state machine states:
-#define initiate 0
-#define inactive 1
-#define emergencyStop 2
-#define goingUp 3
-#define goingDown 4
-#define doorOpen 5
-#define obstruction 6
+typedef enum {
+    initiate = 0,
+    inactive = 1,
+    emergencyStop = 2,
+    goingUp = 3,
+    goingDown = 4,
+    doorOpen  = 5,
+    obstruction  = 6,
+}FSMStates;
+
+
 
 
 
 int main(){
     bool (*orderList)[4] = {0};
     int currentState = initiate;
+    int currentDirection = DIRN_STOP;
 
     initializeElevator();
     int currentFloor = elevio_floorSensor();
 
     currentState = inactive;
+    currentDirection = DIRN_DOWN;
 
     while(1){
         switch (currentState){
@@ -79,11 +85,67 @@ int main(){
             currentFloor = elevio_floorSensor();
 
             if((*orderList)[currentFloor]){
-                
+                stop();
+                currentState = doorOpen;
+                (*orderList)[currentFloor] = 0;
+                break;
             }
+            
+            if (currentFloor==3 && ((*orderList)[0]||(*orderList)[1]||(*orderList)[2])){ //if we are at the top and there are orders below
+                currentState = goingDown;
+                currentDirection = DIRN_DOWN;
+                currentFloor--;
+                elevatorDown();
+                break;
+            }
+            else if(currentFloor==3){
+                currentState = inactive;
+                currentDirection = DIRN_STOP;
+                stop();
+                break;
+            }
+
+            break;
 
 
         case goingDown:
+            //checks for ememgency stop:
+            if(elevio_stopButton){
+                currentState = emergencyStop;
+                performEmergencyStop(orderList);
+                break;
+            }
+
+            lookForOrders(orderList);
+
+            if(elevio_floorSensor() == -1){
+                break;
+            }
+            
+            currentFloor = elevio_floorSensor();
+
+            if((*orderList)[currentFloor]){
+                stop();
+                currentState = doorOpen;
+                (*orderList)[currentFloor] = 0;
+                break;
+            }
+            else{
+                currentFloor--;
+            }
+            
+            if (currentFloor==0 && ((*orderList)[1]||(*orderList)[2]||(*orderList)[3])){ //if we are at the top and there are orders below
+                currentState = goingUp;
+                currentDirection = DIRN_UP;
+                elevatorUp();
+                break;
+            }
+            else if(currentFloor==0){
+                currentState = inactive;
+                currentDirection = DIRN_STOP;
+                stop();
+                break;
+            }
 
             break;
 
