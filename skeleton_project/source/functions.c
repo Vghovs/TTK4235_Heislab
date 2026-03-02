@@ -67,13 +67,16 @@ void initializeElevator(void){
 void  lookForOrders(bool *orderList){
     for (int floor = 0; floor < 4; floor++){
         if(elevio_callButton(floor, BUTTON_CAB)){
+            elevio_buttonLamp(floor, BUTTON_CAB, 1);
             addOrder(floor, orderList);
 
         }
         if(floor < 3 && elevio_callButton(floor, BUTTON_HALL_UP)){
+            elevio_buttonLamp(floor, BUTTON_HALL_UP, 1);
             addOrder(floor, orderList);
         }
         if(floor > 0 && elevio_callButton(floor, BUTTON_HALL_DOWN)){
+            elevio_buttonLamp(floor, BUTTON_HALL_DOWN, 1);
             addOrder(floor, orderList);
         }
     }
