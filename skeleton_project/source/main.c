@@ -42,7 +42,7 @@ int main(){
 
         tempFloor = elevio_floorSensor();
             if(tempFloor != -1){
-                elevio_floorIndicator(currentFloor);
+                elevio_floorIndicator(tempFloor);
             }
             
         switch (currentState){
