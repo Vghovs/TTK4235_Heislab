@@ -15,3 +15,6 @@ void closeDoor(void);
 void initializeElevator(void);
 void lookForOrders(bool *orderList);
 void turnOffAllFloorLamps(int floor);
+bool isOrdersBelow(int currentFloor, bool *orderList);
+bool isOrderListEmpty(bool *orderList);
+bool isOrdersAbove(int currentFloor, bool *orderList);

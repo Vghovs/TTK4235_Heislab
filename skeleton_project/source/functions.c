@@ -105,3 +105,35 @@ void turnOffAllFloorLamps(int floor){
         break;
     }
 }
+
+bool isOrderListEmpty(bool *orderList){
+    int count = 0;
+    for(int i = 0; i < 4; i++){
+        bool status = orderList[i];
+        if(not(status)){
+            count++;
+        }
+    }
+    if(count == 4){
+        return true;
+    }
+    return false;
+}
+
+bool isOrdersBelow(int currentFloor, bool *orderList){
+    for (int floor = 0; floor < currentFloor; floor++){
+        if(orderList[floor]){
+            return true;
+        }
+    }
+    return false;
+}
+
+bool isOrdersAbove(int currentFloor, bool *orderList){
+    for (int floor = currentFloor; floor >= 0; floor--){
+        if(orderList[floor]){
+            return true;
+        }
+    }
+    return false;
+}
