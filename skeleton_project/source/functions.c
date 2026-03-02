@@ -81,3 +81,27 @@ void  lookForOrders(bool *orderList){
         }
     }
 }
+
+
+void turnOffAllFloorLamps(int floor){
+    switch (floor){
+    case 0:
+        elevio_buttonLamp(0, BUTTON_HALL_UP, 0);
+        elevio_buttonLamp(0, BUTTON_CAB, 0);
+        break;
+    case 1:
+        elevio_buttonLamp(1, BUTTON_HALL_DOWN, 0);
+        elevio_buttonLamp(1, BUTTON_HALL_UP, 0);
+        elevio_buttonLamp(1, BUTTON_CAB, 0);
+        break;
+    case 2:
+        elevio_buttonLamp(2, BUTTON_HALL_DOWN, 0);
+        elevio_buttonLamp(2, BUTTON_HALL_UP, 0);
+        elevio_buttonLamp(2, BUTTON_CAB, 0);
+        break;
+    case 3:
+        elevio_buttonLamp(3, BUTTON_HALL_DOWN, 0);
+        elevio_buttonLamp(3, BUTTON_CAB, 0);
+        break;
+    }
+}
