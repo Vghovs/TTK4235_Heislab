@@ -76,16 +76,15 @@ void initializeElevator(void){
     }
 }
 void  lookForOrders(bool *orderList){
-    for (int btn = 1; btn <=3; btn++){
-            if(elevio_callButton(btn, BUTTON_CAB)){
-                addOrder(btn, orderList);
-            }if(elevio_callButton(btn, BUTTON_HALL_UP)){
-                addOrder(btn, orderList);
-            }if(elevio_callButton(btn+1, BUTTON_HALL_DOWN)){
-                addOrder(btn+1, orderList);
-            }
+    for (int floor = 0; floor < 4; floor++){
+        if(elevio_callButton(floor, BUTTON_CAB)){
+            addOrder(floor+1, orderList);
         }
-        if(elevio_callButton(4, BUTTON_CAB)){ 
-            addOrder(4,orderList);
+        if(floor > 0 && elevio_callButton(floor, BUTTON_HALL_UP)){
+            addOrder(floor+1, orderList);
+        }
+        if(floor < 3 && elevio_callButton(floor, BUTTON_HALL_DOWN)){
+            addOrder(floor+1, orderList);
+        }
     }
 }

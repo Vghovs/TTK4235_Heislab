@@ -18,7 +18,7 @@ typedef enum {
 }FSMStates;
 
 bool orders[4] = {false};
-bool (*orderList)[4] = &orders;
+bool *orderList = orders;
 int currentState = initiate;
 int currentDirection = DIRN_STOP;
 int currentFloor = 0;
@@ -51,17 +51,17 @@ int main(){
             
             //determine where to go:
             for(int floor = 0; floor <=3; floor++){
-                if((*orderList)[floor] && floor > currentFloor){
+                if(orderList[floor] && floor > currentFloor){
                     currentState = goingUp;
                 }
-                else if ((*orderList)[floor] && floor < currentFloor){
+                else if (orderList[floor] && floor < currentFloor){
                     currentState = goingDown;
                     currentFloor--;
                 }
-                else if ((*orderList)[floor] && floor == currentFloor && elevio_floorSensor() == currentFloor){
+                else if (orderList[floor] && floor == currentFloor && elevio_floorSensor() == currentFloor){
                     currentState = doorOpen;
                 }
-                else if ((*orderList)[floor] && floor == currentFloor && elevio_floorSensor() == -1){
+                else if (orderList[floor] && floor == currentFloor && elevio_floorSensor() == -1){
                     currentState = goingDown;
                 }
             }
@@ -89,16 +89,16 @@ int main(){
             
             currentFloor = elevio_floorSensor();
 
-            if((*orderList)[currentFloor]){
+            if(orderList[currentFloor]){
                 stop();
                 currentState = doorOpen;
-                (*orderList)[currentFloor] = 0;
+                orderList[currentFloor] = 0;
                 openDoor();
                 doorOpened = currentTime;
                 break;
             }
             
-            if (currentFloor==3 && ((*orderList)[0]||(*orderList)[1]||(*orderList)[2])){ //if we are at the top and there are orders below
+            if (currentFloor==3 && (orderList[0]||orderList[1]||orderList[2])){ //if we are at the top and there are orders below
                 currentState = goingDown;
                 currentDirection = DIRN_DOWN;
                 currentFloor--;
@@ -131,10 +131,10 @@ int main(){
             
             currentFloor = elevio_floorSensor();
 
-            if((*orderList)[currentFloor]){
+            if(orderList[currentFloor]){
                 stop();
                 currentState = doorOpen;
-                (*orderList)[currentFloor] = 0;
+                orderList[currentFloor] = 0;
                 openDoor();
                 doorOpened = currentTime;
                 break;
@@ -143,7 +143,7 @@ int main(){
                 currentFloor--;
             }
             
-            if (currentFloor==0 && ((*orderList)[1]||(*orderList)[2]||(*orderList)[3])){ //if we are at the top and there are orders below
+            if (currentFloor==0 && (orderList[1]||orderList[2]||orderList[3])){ //if we are at the top and there are orders below
                 currentState = goingUp;
                 currentDirection = DIRN_UP;
                 elevatorUp();
@@ -203,8 +203,6 @@ int main(){
             }
         }
     }
-    free(orderList);
-    orderList = NULL;
 }
 
 
