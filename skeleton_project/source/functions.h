@@ -14,3 +14,4 @@ void openDoor(void);
 void closeDoor(void);
 void initializeElevator(void);
 void lookForOrders(bool *orderList);
+void turnOffAllFloorLamps(int floor);
