@@ -24,6 +24,7 @@ void addOrder(int floor, bool *orderList){
 
 void removeOrder(int floor, bool *orderList){
     orderList[floor] = false;
+    turnOffAllFloorLamps(floor);
 }
 
 void clearOrders(bool *orderList){
