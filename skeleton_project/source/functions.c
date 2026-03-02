@@ -16,6 +16,9 @@ void performEmergencyStop(bool *orderList){
     elevio_motorDirection(DIRN_STOP);
     elevio_stopLamp(1);
     clearOrders(orderList);
+    for(int floor = 0; floor <=3; floor++) {
+        turnOffAllFloorLamps(floor);
+    }
 }
  
 void addOrder(int floor, bool *orderList){
@@ -108,17 +111,12 @@ void turnOffAllFloorLamps(int floor){
 }
 
 bool isOrderListEmpty(bool *orderList){
-    int count = 0;
     for(int i = 0; i < 4; i++){
-        bool status = orderList[i];
-        if(not(status)){
-            count++;
+        if (orderList[i]){
+            return false;
         }
     }
-    if(count == 4){
-        return true;
-    }
-    return false;
+    return true;
 }
 
 bool isOrdersBelow(int currentFloor, bool *orderList){
@@ -131,7 +129,7 @@ bool isOrdersBelow(int currentFloor, bool *orderList){
 }
 
 bool isOrdersAbove(int currentFloor, bool *orderList){
-    for (int floor = currentFloor; floor >= 0; floor--){
+    for (int floor = currentFloor; floor < 4; floor++){
         if(orderList[floor]){
             return true;
         }

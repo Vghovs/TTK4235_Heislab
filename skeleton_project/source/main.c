@@ -22,6 +22,7 @@ bool *orderList = orders;
 int currentState = initiate;
 int currentDirection = DIRN_STOP;
 int currentFloor = 0;
+int tempFloor = 0;
 time_t currentTime = 0;
 time_t doorOpened = 0;
 
@@ -38,8 +39,12 @@ int main(){
 
     while(true){
         currentTime = time(NULL);
-        if (elevio_floorSensor() >= 0 && elevio_floorSensor() >= 0) {elevio_floorIndicator(elevio_floorSensor());};
 
+        tempFloor = elevio_floorSensor();
+            if(tempFloor != -1){
+                elevio_floorIndicator(currentFloor);
+            }
+            
         switch (currentState){
         case inactive:
             //checks for ememgency stop:
@@ -55,33 +60,42 @@ int main(){
             for(int floor = 0; floor <=3; floor++){
                 if(orderList[floor] && floor > currentFloor){
                     currentState = goingUp;
-                    printf("Change currentState to goingUp");
+                    printf("Change currentState to goingUp\n");
                     elevatorUp();
                     break;
                 }
                 else if (orderList[floor] && floor < currentFloor){
                     currentState = goingDown;
-                    printf("Change currentState to goingDown");
+                    printf("Change currentState to goingDown\n");
                     currentFloor--;
                     elevatorDown();
                     break;
                 }
                 else if (orderList[floor] && floor == currentFloor && elevio_floorSensor() == currentFloor){
                     currentState = doorOpen;
-                    printf("Change currentState to doorOpen");
+                    printf("Change currentState to doorOpen\n");
                 }
                 else if (orderList[floor] && floor == currentFloor && elevio_floorSensor() == -1){
                     currentState = goingDown;
-                    printf("Change currentState to goingDown");
+                    elevatorDown();
+                    printf("Change currentState to goingDown\n");
                 }
             }
             break;
 
         case emergencyStop:
+            if (elevio_floorSensor()!=-1){
+                openDoor();
+            }
             if(!elevio_stopButton()){
                 elevio_stopLamp(0);
-                currentState = inactive;
-                printf("Change currentState to inactive");
+                if(elevio_floorSensor()!=-1) {
+                    currentState = doorOpen;
+                    printf("Change currentState to doorOpen\n");
+                } else {
+                    currentState = inactive;
+                    printf("Change currentState to inactive\n");
+                }
             }
             break;
 
@@ -89,30 +103,32 @@ int main(){
             //checks for ememgency stop:
             if(elevio_stopButton()){
                 currentState = emergencyStop;
-                printf("Change currentState to emergencyStop");
+                printf("Change currentState to emergencyStop\n");
                 performEmergencyStop(orderList);
                 break;
             }
 
             lookForOrders(orderList);
 
-            if(elevio_floorSensor() == -1){
+            tempFloor = elevio_floorSensor();
+            if(tempFloor == -1){
                 break;
+            } else {
+                currentFloor = tempFloor;
             }
             
-            currentFloor = elevio_floorSensor();
 
             if(currentFloor >= 0 && currentFloor <= 3 && orderList[currentFloor]){
                 stop();
                 currentState = doorOpen;
-                printf("Change currentState to doorOpen");
-                orderList[currentFloor] = 0;
+                printf("Change currentState to doorOpen\n");
+                removeOrder(currentFloor, orderList);
                 openDoor();
                 doorOpened = currentTime;
                 break;
             }
             
-            if (currentFloor==3 && (orderList[0]||orderList[1]||orderList[2])){ //if we are at the top and there are orders below
+            if (currentFloor==3 && (orderList[0]||orderList[1]||orderList[2])){ 
                 currentState = goingDown;
                 printf("Change currentState to goingDown");
                 currentDirection = DIRN_DOWN;
@@ -142,7 +158,7 @@ int main(){
 
             lookForOrders(orderList);
 
-            int tempFloor = elevio_floorSensor();
+            tempFloor = elevio_floorSensor();
             if(tempFloor == -1){
                 break;
             } else {
@@ -205,22 +221,30 @@ int main(){
 
             closeDoor();
             doorOpened = 0;
-            removeOrder(elevio_floorSensor(), orderList);
+            if(currentFloor >= 0 && currentFloor <= 3) {
+                removeOrder(currentFloor, orderList);
+            }
             if (isOrderListEmpty(orderList)) {
                 currentState = inactive;
                 currentDirection = DIRN_STOP;
             }
             else if (currentDirection == DIRN_DOWN && isOrdersBelow(currentFloor, orderList)) {
                 currentState = goingDown;
+                elevatorDown();
             }
             else if (currentDirection == DIRN_UP && isOrdersAbove(currentFloor, orderList)) {
                 currentState = goingUp;
+                elevatorUp();
             }
             else if (isOrdersBelow(currentFloor, orderList)) {
                 currentState = goingDown;
+                currentDirection = DIRN_DOWN;
+                elevatorDown();
             }
             else {
                 currentState = goingUp;
+                currentDirection = DIRN_UP;
+                elevatorUp();
             }
             
             
@@ -244,54 +268,3 @@ int main(){
         }
     }
 }
-
-
-
-
-
-
-
-
-// int main(){
-//     elevio_init();
-    
-//     printf("=== Example Program ===\n");
-//     printf("Press the stop button on the elevator panel to exit\n");
-
-//     elevio_motorDirection(DIRN_UP);
-
-//     while(1){
-//         int floor = elevio_floorSensor();
-
-//         if(floor == 0){
-//             elevio_motorDirection(DIRN_UP);
-//         }
-
-//         if(floor == N_FLOORS-1){
-//             elevio_motorDirection(DIRN_DOWN);
-//         }
-
-
-//         for(int f = 0; f < N_FLOORS; f++){
-//             for(int b = 0; b < N_BUTTONS; b++){
-//                 int btnPressed = elevio_callButton(f, b);
-//                 elevio_buttonLamp(f, b, btnPressed);
-//             }
-//         }
-
-//         if(elevio_obstruction()){
-//             elevio_stopLamp(1);
-//         } else {
-//             elevio_stopLamp(0);
-//         }
-        
-//         if(elevio_stopButton()){
-//             elevio_motorDirection(DIRN_STOP);
-//             break;
-//         }
-        
-//         nanosleep(&(struct timespec){0, 20*1000*1000}, NULL);
-//     }
-
-//     return 0;
-// }
