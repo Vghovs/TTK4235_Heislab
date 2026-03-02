@@ -202,11 +202,28 @@ int main(){
             else if (currentTime-doorOpened <= 3){
                 break;
             }
-            
-            currentState = inactive;
+
             closeDoor();
             doorOpened = 0;
             removeOrder(elevio_floorSensor(), orderList);
+            if (isOrderListEmpty(orderList)) {
+                currentState = inactive;
+                currentDirection = DIRN_STOP;
+            }
+            else if (currentDirection == DIRN_DOWN && isOrdersBelow(currentFloor, orderList)) {
+                currentState = goingDown;
+            }
+            else if (currentDirection == DIRN_UP && isOrdersAbove(currentFloor, orderList)) {
+                currentState = goingUp;
+            }
+            else if (isOrdersBelow(currentFloor, orderList)) {
+                currentState = goingDown;
+            }
+            else {
+                currentState = goingUp;
+            }
+            
+            
 
             break;
 
