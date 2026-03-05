@@ -1,5 +1,18 @@
-#include "functions.h"
 #include "testFunctions.h"
+
+
+
+void mainTest(void) {
+    assert(testPreformEmergencyStop());
+    assert(testAddOrder());
+    assert(testIsOrdersAbove());
+    assert(testIsOrdersBelow());
+    assert(testIsOrderlistEmpty());
+    assert(testClearOrders());
+    assert(testRemoveOrders());
+    printf("All tests passed!");
+    return;
+}
 
 bool testPreformEmergencyStop(void){
     bool arr1[4] = {true, true, false, true};
@@ -41,7 +54,7 @@ bool testIsOrdersAbove(void){
     bool *orderList = orders;
 
     for (int floor = 0; floor <=3; floor++) {
-        if(isOrdersAbove(0, orderList)) {return false;}
+        if(isOrdersAbove(floor, orderList)) {return false;}
     }
 
     orderList[2] = true;
@@ -51,9 +64,10 @@ bool testIsOrdersAbove(void){
     if(isOrdersAbove(3, orderList)) {return false;}
 
     orderList[3] = true;
-    for (int floor = 0; floor <=3; floor++) {
-        if(!isOrdersAbove(0, orderList)) {return false;}
+    for (int floor = 0; floor <=2; floor++) {
+        if(!isOrdersAbove(floor, orderList)) {return false;}
     }
+    if(isOrdersAbove(3, orderList)) {return false;}
     return true;
 }
 
@@ -62,7 +76,7 @@ bool testIsOrdersBelow(void){
     bool *orderList = orders;
 
     for (int floor = 0; floor <=3; floor++) {
-        if(isOrdersBelow(0, orderList)) {return false;}
+        if(isOrdersBelow(floor, orderList)) {return false;}
     }
 
     orderList[1] = true;
@@ -72,8 +86,9 @@ bool testIsOrdersBelow(void){
     if(!isOrdersBelow(3, orderList)) {return false;}
 
     orderList[0] = true;
-    for (int floor = 0; floor <=3; floor++) {
-        if(!isOrdersBelow(0, orderList)) {return false;}
+        if(isOrdersBelow(0, orderList)) {return false;}
+    for (int floor = 1; floor <=3; floor++) {
+        if(!isOrdersBelow(floor, orderList)) {return false;}
     }
     return true;
 }
@@ -112,25 +127,24 @@ bool testClearOrders(void) {
 }
 
 bool testRemoveOrders(void) {
-    bool ordersUp[4] = {true};
-    bool ordersDown[4] = {true};
+    bool ordersUp[4] = {true, true, true, true};
+    bool ordersDown[4] = {true, true, true, true};
     bool *orderListUp = ordersUp;
     bool *orderListDown = ordersDown;
 
     removeOrder(0, orderListUp, orderListDown);
     
-    if(orderListDown[0] || orderListUp[0]) {return false;}
+    if((orderListDown[0] || orderListUp[0])) {return false;}
     for (int floor = 1; floor <=3; floor++) {
-        if(!orderListDown[floor] || !orderListUp[floor]) {return false;}
+        if((!orderListDown[floor]) || (!orderListUp[floor])) {return false;}
     }
-
+    
     removeOrder(3, orderListUp, orderListDown);
 
     if(orderListDown[0] || orderListUp[0]) {return false;}
+    if(!orderListDown[1] || !orderListUp[1]) {return false;}
+    if(!orderListDown[2] || !orderListUp[2]) {return false;}
     if(orderListDown[3] || orderListUp[3]) {return false;}
-    for (int floor = 1; floor <=2; floor++) {
-        if(!orderListDown[floor] || !orderListUp[floor]) {return false;}
-    }
 
     removeOrder(1, orderListUp, orderListDown);
     removeOrder(2, orderListUp, orderListDown);
@@ -138,6 +152,6 @@ bool testRemoveOrders(void) {
     for (int floor = 0; floor <= 3; floor++) {
         if(orderListDown[floor] || orderListUp[floor]) {return false;}
     }
-
+    
     return true;
 }

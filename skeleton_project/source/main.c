@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "driver/elevio.h"
 #include "functions.h"
+#include "testFunctions.h"
 
 //Fininte state machine states:
 typedef enum {
@@ -31,6 +32,7 @@ time_t doorOpened = 0;
 
 
 int main(){
+    mainTest();
     printf("Initializing");
     initializeElevator();
     currentFloor = elevio_floorSensor();

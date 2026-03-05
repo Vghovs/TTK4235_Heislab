@@ -4,7 +4,7 @@ EXECUTABLE  = elevator
 COMPILER    = clang
 CFLAGS      = -Wall -g -std=gnu11 -fsanitize=address
 LDFLAGS     = -fsanitize=address
-EXCLUDE     = '*test*'
+EXCLUDE     = '*_test*'
 
 
 SOURCEDIR = source

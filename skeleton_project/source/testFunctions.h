@@ -2,6 +2,9 @@
 #include "functions.h"
 #include "driver/elevio.h"
 #include <stdbool.h>
+#include <assert.h>
+
+void mainTest(void);
 
 bool testPreformEmergencyStop(void);
 bool testAddOrder(void);

@@ -58,7 +58,7 @@ void initializeElevator(void){
     elevio_buttonLamp(3, BUTTON_CAB, 0);
     
     int tempFloorSensor = elevio_floorSensor();
-    while (tempFloorSensor == -1){
+    while (!(tempFloorSensor >= 0 && tempFloorSensor <= 3)){
         elevatorDown();
         tempFloorSensor = elevio_floorSensor();
     }
