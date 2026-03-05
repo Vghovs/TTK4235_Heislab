@@ -136,7 +136,7 @@ bool isOrdersBelow(int currentFloor, bool *orderList){
 }
 
 bool isOrdersAbove(int currentFloor, bool *orderList){
-    for (int floor = currentFloor; floor < 4; floor++){
+    for (int floor = currentFloor+1; floor < 4; floor++){
         if(orderList[floor]){
             return true;
         }
