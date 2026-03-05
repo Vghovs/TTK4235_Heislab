@@ -6,7 +6,7 @@
 void elevatorDown(void);
 void elevatorUp(void);
 void stop(void);
-void performEmergencyStop(bool *orderList1, bool *orderList2); 
+void performEmergencyStop(bool *orderListUp, bool *orderListDown); 
 void addOrder(int floor, bool *orderList);
 void removeOrder(int floor, bool *orderListUp, bool *orderListDown);
 void clearOrders(bool *orderList);

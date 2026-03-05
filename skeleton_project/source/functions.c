@@ -12,11 +12,11 @@ void stop(void){
     elevio_motorDirection(DIRN_STOP);
 }
 
-void performEmergencyStop(bool *orderList1, bool *orderList2){
+void performEmergencyStop(bool *orderListUp, bool *orderListDown){
     elevio_motorDirection(DIRN_STOP);
     elevio_stopLamp(1);
-    clearOrders(orderList1);
-    clearOrders(orderList2);
+    clearOrders(orderListUp);
+    clearOrders(orderListDown);
     for(int floor = 0; floor <=3; floor++) {
         turnOffAllFloorLamps(floor);
     }
