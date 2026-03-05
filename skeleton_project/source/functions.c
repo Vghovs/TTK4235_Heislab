@@ -57,7 +57,16 @@ void initializeElevator(void){
     }
     elevio_buttonLamp(3, BUTTON_CAB, 0);
     
+    int tempFloorSensor = elevio_floorSensor();
+    while (tempFloorSensor == -1){
+        elevatorDown();
+        tempFloorSensor = elevio_floorSensor();
+    }
+    stop();
+    elevio_floorIndicator(tempFloorSensor);
+    return;
 
+    /*
     if (elevio_floorSensor()== -1){
         elevatorDown();
         while (elevio_floorSensor() == -1){
@@ -65,10 +74,12 @@ void initializeElevator(void){
         }
         stop();   
     }
+    int tempFloorSensor = elevio_floorSensor()
     if (elevio_floorSensor() != -1){
         elevio_floorIndicator(elevio_floorSensor());
     }
     return;
+    */
 }
 void  lookForOrders(int currentFloor, bool *orderListUp, bool *orderListDown){
     for (int floor = 0; floor < 4; floor++){
