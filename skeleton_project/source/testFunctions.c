@@ -36,7 +36,7 @@ bool testAddOrder(void){
     return false;
 }
 
-bool testIsOrdersAbove(){
+bool testIsOrdersAbove(void){
     bool orders[4] = {false};
     bool *orderList = orders;
 
@@ -57,7 +57,7 @@ bool testIsOrdersAbove(){
     return true;
 }
 
-bool testIsOrdersBelow(int currentFloor, bool *orderList){
+bool testIsOrdersBelow(void){
     bool orders[4] = {false};
     bool *orderList = orders;
 
@@ -78,7 +78,7 @@ bool testIsOrdersBelow(int currentFloor, bool *orderList){
     return true;
 }
 
-bool testIsOrderlistEmpty() {
+bool testIsOrderlistEmpty(void) {
     bool orders[4] = {false};
     bool *orderList = orders;
 
@@ -99,7 +99,7 @@ bool testIsOrderlistEmpty() {
     return true;
 }
 
-bool testClearOrders() {
+bool testClearOrders(void) {
     bool orders[4] = {true};
     bool *orderList = orders;
 
@@ -111,7 +111,7 @@ bool testClearOrders() {
     return true;
 }
 
-bool testRemoveOrders() {
+bool testRemoveOrders(void) {
     bool ordersUp[4] = {true};
     bool ordersDown[4] = {true};
     bool *orderListUp = ordersUp;
@@ -140,10 +140,4 @@ bool testRemoveOrders() {
     }
 
     return true;
-}
-
-void removeOrder(int floor, bool *orderListUp, bool *orderListDown){
-    orderListUp[floor] = false;
-    orderListDown[floor] = false;
-    turnOffAllFloorLamps(floor);
 }
