@@ -16,6 +16,7 @@ void performEmergencyStop(bool *orderList1, bool *orderList2){
     elevio_motorDirection(DIRN_STOP);
     elevio_stopLamp(1);
     clearOrders(orderList1);
+    clearOrders(orderList2);
     for(int floor = 0; floor <=3; floor++) {
         turnOffAllFloorLamps(floor);
     }
@@ -25,8 +26,9 @@ void addOrder(int floor, bool *orderList){
     orderList[floor] = true;
 }
 
-void removeOrder(int floor, bool *orderList){
-    orderList[floor] = false;
+void removeOrder(int floor, bool *orderListUp, bool *orderListDown){
+    orderListUp[floor] = false;
+    orderListDown[floor] = false;
     turnOffAllFloorLamps(floor);
 }
 
@@ -68,22 +70,27 @@ void initializeElevator(void){
     }
     return;
 }
-void  lookForOrders(bool *orderList){
+void  lookForOrders(int currentFloor, bool *orderListUp, bool *orderListDown){
     for (int floor = 0; floor < 4; floor++){
-        if(elevio_callButton(floor, BUTTON_CAB)){
+        if(elevio_callButton(floor, BUTTON_CAB) && currentFloor < floor){
             elevio_buttonLamp(floor, BUTTON_CAB, 1);
-            addOrder(floor, orderList);
-
+            addOrder(floor, orderListUp);
+        }
+        if(elevio_callButton(floor, BUTTON_CAB) && currentFloor >= floor){
+            elevio_buttonLamp(floor, BUTTON_CAB, 1);
+            addOrder(floor, orderListDown);
         }
         if(floor < 3 && elevio_callButton(floor, BUTTON_HALL_UP)){
             elevio_buttonLamp(floor, BUTTON_HALL_UP, 1);
-            addOrder(floor, orderList);
+            addOrder(floor, orderListUp);
         }
         if(floor > 0 && elevio_callButton(floor, BUTTON_HALL_DOWN)){
             elevio_buttonLamp(floor, BUTTON_HALL_DOWN, 1);
-            addOrder(floor, orderList);
+            addOrder(floor, orderListDown);
         }
     }
+
+    
 }
 
 
