@@ -17,8 +17,10 @@ typedef enum {
     obstruction  = 6,
 }FSMStates;
 
-bool orders[4] = {false};
-bool *orderList = orders;
+bool ordersUp[4] = {false};
+bool ordersDown[4] = {false};
+bool *orderListUp = ordersUp;
+bool *orderListDown = ordersDown;
 int currentState = initiate;
 int currentDirection = DIRN_STOP;
 int currentFloor = 0;
@@ -50,6 +52,7 @@ int main(){
             //checks for ememgency stop:
             if(elevio_stopButton()){
                 currentState = emergencyStop;
+                currentDirection = DIRN_STOP;
                 performEmergencyStop(orderList);
                 break;
             }
@@ -60,12 +63,14 @@ int main(){
             for(int floor = 0; floor <=3; floor++){
                 if(orderList[floor] && floor > currentFloor){
                     currentState = goingUp;
+                    currentDirection = DIRN_UP;
                     printf("Change currentState to goingUp\n");
                     elevatorUp();
                     break;
                 }
                 else if (orderList[floor] && floor < currentFloor){
                     currentState = goingDown;
+                    currentDirection = DIRN_DOWN;
                     printf("Change currentState to goingDown\n");
                     currentFloor--;
                     elevatorDown();
@@ -77,6 +82,7 @@ int main(){
                 }
                 else if (orderList[floor] && floor == currentFloor && elevio_floorSensor() == -1){
                     currentState = goingDown;
+                    currentDirection = DIRN_DOWN;
                     elevatorDown();
                     printf("Change currentState to goingDown\n");
                 }
@@ -103,6 +109,7 @@ int main(){
             //checks for ememgency stop:
             if(elevio_stopButton()){
                 currentState = emergencyStop;
+                currentDirection = DIRN_STOP;
                 printf("Change currentState to emergencyStop\n");
                 performEmergencyStop(orderList);
                 break;
@@ -151,6 +158,7 @@ int main(){
             //checks for ememgency stop:
             if(elevio_stopButton()){
                 currentState = emergencyStop;
+                currentDirection = DIRN_STOP;
                 printf("Change currentState to emergencyStop\n");
                 performEmergencyStop(orderList);
                 break;
@@ -199,6 +207,7 @@ int main(){
             //checks for ememgency stop:
             if(elevio_stopButton()){
                 currentState = emergencyStop;
+                currentDirection = DIRN_STOP;
                 performEmergencyStop(orderList);
                 break;
             }
@@ -255,6 +264,7 @@ int main(){
             //checks for ememgency stop:
             if(elevio_stopButton()){
                 currentState = emergencyStop;
+                currentDirection = DIRN_STOP;
                 performEmergencyStop(orderList);
                 break;
             }
